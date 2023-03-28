@@ -10,6 +10,7 @@ public class Coolclass extends PApplet {
 	static final int WIDTH = 1250;
 	static final int HEIGHT = 750;
 
+
 	
 	Random ccr = new Random();
 	
@@ -30,14 +31,24 @@ public class Coolclass extends PApplet {
 		int ranges = 35;
 		int rangeb = 35;
 		
+		int linesfinaly=5;
 		
-		ArrayList<lines> lines = new ArrayList<lines>();
+		
+		ArrayList<Lines> lines = new ArrayList<Lines>();
+		
+		
+		@Override
+		public void setup() {
+			
+			lines.add(new Lines(this));
+		}
+
 		
 	@Override
 	public void settings() {
 		//this is where things get set to stuff
 		size(WIDTH,HEIGHT);
-		lines.add(new lines(this));
+		
 	}
 	public int chaincheck() {
 		int chain = chainf=ccr.nextInt(chainb)+chains;
@@ -55,7 +66,8 @@ public class Coolclass extends PApplet {
 		
 		void drawlines() {
 			for (int i = 0; i < lines.size(); i++) {
-				lines.get(i).draw();
+				//lines.get(i).draw(linesfinaly);
+			addlines();
 			}
 			System.out.println(lines.size());
 		}
@@ -66,19 +78,78 @@ public class Coolclass extends PApplet {
 			}
 			
 		}
-		
-		void addlines() {
-			for (int i = 0; i < lines.size(); i++) {
-				large=i;
-			}
-			if(lines.get(large).x<(WIDTH)-thin) {
-				lines.add(new lines(this));
+		int getfinaly() {
+			Integer linesy=5;
+			int linesfinaly =0;
+			int lineslasty=5;
+			linesy=lines.size();
+				if(lines.isEmpty()==true) {
+					lineslasty=height/2;
+				}
+				else {
+					if(!lines.isEmpty()){
+						lineslasty=lines.get(lines.size()-1).finaly;
+					}
+					
+					}
 			
-			}
+			Boolean linesisup =true;
 			
+	//this is just to debug
 			
-			
+			//delete things before this
+				
+				
+			//chaining stuff	
+				
+				
+	
+	if(changedir!=0) {
+		linesisup=ccr.nextBoolean();
+	}
+	else {
+	changedir=chaincheck();
+	}
+				
+	//where I make the distance
+	int linesry = ccr.nextInt(rangeb) + ranges;
+	System.out.println("ry "+linesry);
+
+	
+	
+	//if it goes up, make sure it goes up
+	if(linesisup) {
+		if(linesry<1) {
+			linesry*=-1;
 		}
+	}
+	//
+	
+	
+	
+	//if it is going down, make sure it goes down
+	else {
+		if(linesry>1) {
+			linesry*=-1;
+		}
+	}
+	//
+	
+ linesfinaly = lineslasty + linesry;  
+	return linesfinaly;
+		}
+		void addlines() {
+
+			
+			if(lines.get(lines.size()-1).x<(WIDTH)-thin) {
+				lines.add(new Lines(this));
+			}	
+			}
+			
+			
+			
+
+
 		
 		
 	

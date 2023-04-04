@@ -5,44 +5,46 @@ import java.util.Random;
 import processing.core.PApplet;
 
 public class Lines {
-	
+
 	Coolclass pro;
-	
-	
-	int x = 1250;
-	int finaly=this.finaly;
-	
-			
-		 
-		 
-		 
-		 
-	
- Lines(Coolclass cc){
-	pro = cc;
-	Integer finaly=pro.getfinaly();
-	if( finaly==null) {
-		finaly=pro.HEIGHT/2;
+	// int counter;
+	// if(counter==0) {
+	int x; 
+	// }
+	int finaly;
+	boolean isactive = true;
+
+	Lines(Coolclass cc, int y) {
+		pro = cc;
+		
+		this.finaly = y;
+	x = pro.WIDTH-(pro.thin/2);
+
 	}
-	draw(finaly);
-}
-	public void draw(Integer finaly) {
+
+	public void draw() {
 		// Make a random int between pro.ranges and pro.rangeb and get the previous
 		// lines y
-		
-		System.out.println(x);
-		System.out.println(finaly);
-		System.out.println(pro.thin);
-		System.out.println(pro.tall);
-		//try {
-			pro.rect(x, finaly, pro.thin, pro.tall);
-	//	}
-		//catch(NullPointerException e){
-		//	System.out.println("fail");
-			
-	//	}
-		
-		
+
+		System.out.println("lines x " + x);
+		System.out.println("width of screen " + pro.WIDTH);
+		System.out.println("lines final y " + finaly);
+		System.out.println("line width " + pro.thin);
+		System.out.println("Lines height " + pro.tall);
+		System.out.println(pro.lines.size());
+		// System.out.println("");
+		// try {
+		pro.stroke(255, 0, 0);
+		pro.fill(255, 0, 0);
+		// pro.rect(pro.WIDTH/2, 50, 50, 50);
+		pro.fill(255, 170, 190);
+		pro.rect(x, finaly, pro.thin, pro.tall);
+		// counter++;
+		// }
+		// catch(NullPointerException e){
+		// System.out.println("fail");
+
+		// }
 
 	}
 }

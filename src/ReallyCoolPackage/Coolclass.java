@@ -12,10 +12,10 @@ public class Coolclass extends PApplet {
 	static final int HEIGHT = 750;
 
 	Random ccr = new Random();
-
-	
+   
+	   
 	//makes it so if an up and down chain happenes, the lines overlap twice
-	Boolean leniency =true; 
+	Boolean leniency =false; 
 	//Max and minumum height of lines
 	int maxheight = HEIGHT/20;
 	int minheight = HEIGHT-(HEIGHT/20);

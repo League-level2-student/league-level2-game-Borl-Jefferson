@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.Random;
 
 import processing.core.PApplet;
-
+//as levels get harder, have the color change
 public class Coolclass extends PApplet {
 
 	static final int WIDTH = 1250;
@@ -13,9 +13,12 @@ public class Coolclass extends PApplet {
 
 	Random ccr = new Random();
 
+	
+	//makes it so if an up and down chain happenes, the lines overlap twice
+	Boolean leniency =true; 
 	//Max and minumum height of lines
-	int maxheight = HEIGHT/4;
-	int minheight = HEIGHT-(HEIGHT/4);
+	int maxheight = HEIGHT/20;
+	int minheight = HEIGHT-(HEIGHT/20);
 	
 	int changedir = 0;
 	// speed of the lines, should be chosen by the user, or oculd be entered through
@@ -26,15 +29,26 @@ public class Coolclass extends PApplet {
 	int tall = 100;
 	// (should be a rage)how long things should be chained togegther before
 	// switching directicten (as in up and down), same stuff
-	int chains = 2;
-	int chainb = 4;
+	int chains = 3;
+	int chainb = 6;
 	int chainf;
 	// finds the last line so it can find out when to add a new line
 	int large;
 	// (should be a range)the max distance the lines can be apart
-	int ranges = 35;
-	int rangeb = 35;
-
+	int ranges = 25;
+	int rangeb = 45;
+//Checks to see if the lines should go to the middle or not
+	Boolean mid = false;
+	Boolean midt=false;
+	Boolean midb =false;
+	//middle of the screen
+	int midscreen = HEIGHT/2;
+	//-h-ow- -many l-ines it sh-ould make -to get t-o the cen-te-r
+	//budget strike through ^^
+//	-int -line-st-omid =- 1-0;
+	
+	
+// just to make sure it doesn't give a null error	
 	int linesfinaly = 5;
 
 	ArrayList<Lines> lines = new ArrayList<Lines>();
@@ -107,6 +121,7 @@ public class Coolclass extends PApplet {
 		int linesfinaly = 0;
 		int lineslasty = 5;
 		linesy = lines.size();
+		
 		if (lines.isEmpty() == true) {
 			lineslasty = height / 2;
 		} else {
@@ -129,7 +144,24 @@ public class Coolclass extends PApplet {
 		// where I make the distance
 		int linesry = ccr.nextInt(rangeb) + ranges;
 		System.out.println("ry " + linesry);
+		
+		
+		
+		//checks to make sure its in bounds
 
+		
+		
+		
+		
+		
+		//the worse version
+		
+
+		
+		
+		
+		
+		
 		// if it goes up, make sure it goes up
 		if (linesisup) {
 			if (linesry < 1) {
@@ -151,20 +183,62 @@ public class Coolclass extends PApplet {
 		
 		//lineslasty = the y of the last line, and linesry = the difference between finaly and lasty
 		linesfinaly = lineslasty + linesry;
-		if(linesfinaly < minheight) {
+		if(linesfinaly > minheight) {
 			linesfinaly = lineslasty-linesry;
+			
+			changedir = chaincheck();
+			linesisup=true;
+	midt=true;
+
 		}
-		if(linesfinaly > maxheight) {
+		if(linesfinaly < maxheight) {
 			linesfinaly = lineslasty-linesry;
+			
+			changedir = chaincheck();
+			linesisup=false;
+			midb=true;
+		
 		}
+		
+		if(midt) {
+			if(linesfinaly<midscreen) {
+				midt=false;
+			}
+			if(linesry<0) {
+				linesry*=-1;
+			}
+			
+		}
+		if(midb) {
+			if(linesfinaly>midscreen) {
+				midb=false;
+			}
+			if(linesry>0) {
+				linesry*=-1;
+			}
+		}
+		
+		
+		
+		linesfinaly = lineslasty-linesry;
+		
+		
+			
 		return linesfinaly;
 	}
 
 	void addlines() {
-
+if(leniency) {
+		if (lines.get(lines.size() - 1).x < (WIDTH) - ((thin/10)*9)) {
+			lines.add(new Lines(this, getfinaly()));
+		}
+	}
+	else {
 		if (lines.get(lines.size() - 1).x < (WIDTH) - thin) {
 			lines.add(new Lines(this, getfinaly()));
 		}
+	}
+		
 	}
 
 	public static void main(String[] args) {

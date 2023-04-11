@@ -32,6 +32,8 @@ public class Lines {
 		System.out.println("line width " + pro.thin);
 		System.out.println("Lines height " + pro.tall);
 		System.out.println(pro.lines.size());
+		System.out.println("midt "+pro.midt);
+		System.out.println("midb "+pro.midb);
 		// System.out.println("");
 		// try {
 		pro.stroke(255, 0, 0);

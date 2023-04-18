@@ -16,9 +16,7 @@ public class Coolclass extends PApplet {
 	   
 	//makes it so if an up and down chain happenes, the lines overlap twice
 	Boolean leniency =false; 
-	//Max and minumum height of lines
-	int maxheight = HEIGHT/20;
-	int minheight = HEIGHT-(HEIGHT/20);
+
 	
 	int changedir = 0;
 	// speed of the lines, should be chosen by the user, or oculd be entered through
@@ -27,7 +25,10 @@ public class Coolclass extends PApplet {
 	int thin = 50;
 	// The height
 	int tall = 100;
-	// (should be a rage)how long things should be chained togegther before
+		//Max and minumum height of lines
+	int maxheight = tall*2;
+	int minheight = HEIGHT-(tall*2);	
+// (should be a rage)how long things should be chained togegther before
 	// switching directicten (as in up and down), same stuff
 	int chains = 3;
 	int chainb = 6;
@@ -46,6 +47,26 @@ public class Coolclass extends PApplet {
 	//-h-ow- -many l-ines it sh-ould make -to get t-o the cen-te-r
 	//budget strike through ^^
 //	-int -line-st-omid =- 1-0;
+	//Used to add the overlap box
+	int y1;
+	int x1;
+	int w1 = thin;
+	int h1 = tall;
+	
+	int y2;
+	int x2;
+	int w2 = thin;
+	int h2 = tall;
+	
+	int ax;
+	int ay;
+	int bx;
+	int by;
+	int w3;
+	int h3;
+	int y3;
+	int x3;
+	
 	
 	
 // just to make sure it doesn't give a null error	
@@ -79,12 +100,16 @@ public class Coolclass extends PApplet {
 		movelines();
 		drawlines();
 		addlines();
-		for (int i = 0; i < lines.size(); i++) {
-
-		}
+		remove();
+		overlap();
 	}
 
 	void remove() {
+		for (int i = 0; i < lines.size(); i++) {
+			if(lines.get(i).x < -thin) {
+				lines.get(i).isactive=false;
+			}
+		}
 		Iterator<Lines> it = lines.iterator();
 		while (it.hasNext()) {
 			Lines eachAlien = it.next();
@@ -102,6 +127,7 @@ public class Coolclass extends PApplet {
 	}
 
 	void drawlines() {
+		background(0, 0, 0);
 		for (int i = 0; i < lines.size(); i++) {
 			lines.get(i).draw();
 	
@@ -226,6 +252,55 @@ public class Coolclass extends PApplet {
 			
 		return linesfinaly;
 	}
+void overlap() {
+	for (int i = 1; i < lines.size(); i++) {
+		if(lines.get(i-1).finaly > lines.get(i).finaly) {
+			 y1 = lines.get(i-1).finaly;
+			 x1 = lines.get(i-1).x;
+			 y2 = lines.get(i).finaly;
+			 x2 = lines.get(i).x;
+			
+			 ax=x1+thin;
+			 ay=y1;
+			 
+			 bx=x2;
+			 by=y2+tall;
+			 
+			 w3=ax-bx;
+			 h3=by-ay;
+			 
+			 x3=ax-w3;
+			// y3=ay;
+			 fill(255, 255, 255);
+			 rect(x3, y1, w3, h3);
+			 //x,y,w,h
+			 
+	}
+	/*	else {
+			
+				 y1 = lines.get(i-1).finaly;
+				 x1 = lines.get(i-1).x;
+				 y2 = lines.get(i).finaly;
+				 x2 = lines.get(i).x;
+				 
+				 ax=x1+thin;
+				 ay=y1;
+				 
+				 bx=x2;
+				 by=y2+tall;
+				 
+				 w3=ax-bx;
+				 h3=by-ay;
+				 
+				 x3=ax-w3;
+				// y3=ay;
+				 fill(255, 255, 255);
+				 rect(x3, y1, w3, h3);
+				 //x,y,w,h
+		}*/
+	}
+	
+}
 
 	void addlines() {
 if(leniency) {

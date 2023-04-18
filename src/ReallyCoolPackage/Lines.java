@@ -21,7 +21,7 @@ public class Lines {
 	x = pro.WIDTH-(pro.thin/2);
 
 	}
-
+ 
 	public void draw() {
 		// Make a random int between pro.ranges and pro.rangeb and get the previous
 		// lines y
@@ -36,10 +36,10 @@ public class Lines {
 		System.out.println("midb "+pro.midb);
 		// System.out.println("");
 		// try {
-		pro.stroke(255, 0, 0);
-		pro.fill(255, 0, 0);
+		pro.stroke(150, 0, 75);
+		pro.fill(228, 0, 0);
 		// pro.rect(pro.WIDTH/2, 50, 50, 50);
-		pro.fill(255, 170, 190);
+		pro.fill(228, 83, 3);
 		pro.rect(x, finaly, pro.thin, pro.tall);
 		// counter++;
 		// }

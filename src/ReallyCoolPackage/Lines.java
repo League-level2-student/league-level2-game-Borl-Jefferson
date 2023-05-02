@@ -25,7 +25,7 @@ public class Lines {
 	public void draw() {
 		// Make a random int between pro.ranges and pro.rangeb and get the previous
 		// lines y
-   
+   /*
 		System.out.println("lines x " + x);
 		System.out.println("width of screen " + pro.WIDTH);
 		System.out.println("lines final y " + finaly);
@@ -35,6 +35,7 @@ public class Lines {
 		System.out.println("midt "+pro.midt);
 		System.out.println("midb "+pro.midb);
 		// System.out.println("");
+	*/
 		// try {
 		pro.stroke(150, 0, 75);
 		pro.fill(228, 0, 0);

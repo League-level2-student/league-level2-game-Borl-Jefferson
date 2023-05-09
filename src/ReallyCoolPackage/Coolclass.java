@@ -1,5 +1,7 @@
 package ReallyCoolPackage;
 
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -8,7 +10,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+import javax.swing.JOptionPane;
+
 import processing.core.PApplet;
+import processing.core.PFont;
 //as levels get harder, have the color change
 public class Coolclass extends PApplet{
 
@@ -22,9 +27,13 @@ public class Coolclass extends PApplet{
 	//makes it so if an up and down chain happenes, the lines overlap twice
 	Boolean leniency =false; 
 //does what the name impies
-	boolean insidelines =true;
+	boolean insidelines =false;
 	
 	int changedir = 0;
+	//used to help debug the point system
+	int cooldebugline;
+	//this is what prevents you from getting points at the very begening 
+	boolean juststarted =true;
 	// speed of the lines, should be chosen by the user, or oculd be entered through
 	int speed = 4;
 	// size of the lines, same stuff after the comma as before
@@ -39,12 +48,16 @@ public class Coolclass extends PApplet{
 	int chains = 3;
 	int chainb = 6;
 	int chainf;
+	//stores the good, bad, and net points
+	int goodp;
+	int badp;
+	int netp;
 	// finds the last line so it can find out when to add a new line
 	int large;
 	//used to store the speed when paused
 	int speedsave;
 	//used to have the pause stuff work
-	boolean ispaused = false;
+	boolean ispaused = true;
 	// (should be a range)the max distance the lines can be apart
 	int ranges = 25;
 	int rangeb = 45;
@@ -91,23 +104,60 @@ public class Coolclass extends PApplet{
 
 		lines.add(new Lines(this, getfinaly()));
 	}
-
-	@Override
-	public void settings() {
+public void settings() {
 		// this is where things get set to stuff
 		size(WIDTH, HEIGHT);
 
 	}
+public int chaincheck() {
 
-	public int chaincheck() {
 		int chain = chainf = ccr.nextInt(chainb) + chains;
 		System.out.println("chain " + chainf);
 		return chain;
 	}
-
-	// new Segment(hx, hy, this
+void points() {
+	netp=goodp-badp;
+	PFont font;
+	font = createFont("Arial",8,true);
+	textFont(font,36);
+	fill(255, 255, 255);
+	text("good " + goodp, 50, 50);
+	text("bad " + badp, 50, 100);
+	text("net " + netp, WIDTH-250, 50);
+	if(!ispaused) {
+	if(!juststarted) {
+		
+		if(insidelines) {
+			goodp++;
+		}
+		if(!insidelines) {
+			badp++;
+		}
+		
+	
+	}
+	}
+}
+// new Segment(hx, hy, this
+void juststarted() {
+	if(juststarted) {
+		if(ispaused) {
+		PFont f;
+		f = createFont("Arial",16,true);
+		textFont(f,36);
+		fill(255, 255, 255);
+		text("Press [space] to start", WIDTH/2-150, HEIGHT/2);
+		text("Press [shift + t] for tutorial", WIDTH/2-150, HEIGHT/2+100);
+		text("Press [shift + space] for hard mode (shift + f for details)", WIDTH/2-400, HEIGHT/2+150);
+	}
+	}
+}
 	@Override
 	public void draw() {
+		mousecheck();
+		points();
+		juststarted();
+		tutorial();
 		linesamount();
 		slow();
 		movelines();
@@ -115,9 +165,23 @@ public class Coolclass extends PApplet{
 		addlines();
 		remove();
 		overlap();
+		
 	}
-
-	void remove() {
+	void tutorial() {
+		if (key == KeyEvent.VK_T) {
+			delay(500);
+			JOptionPane.showMessageDialog(null, "Keep your cursor inside the orange and white boxes");
+		JOptionPane.showMessageDialog(null, " The white boxes are were the lines overlap, \n  However they give less points");
+		JOptionPane.showMessageDialog(null, "Good stands for good points, you get those for being inside the lines \n Bad stands for bad points, you get those for being outside of the lines \n Net stands for net points, it's your good points with bad ones subtracted");
+		JOptionPane.showMessageDialog(null, "Press space to pause ");
+		JOptionPane.showMessageDialog(null, "Collect the tokens on the top and bottom of the screen to get rid of bad points \n Try to do it quickly though, since you still get bad points for being outside of the lines \n Hasn't been added yet though");
+		}
+		if(key ==KeyEvent.VK_F) {
+			JOptionPane.showMessageDialog(null, "Hard mode makes it so you don't get any points for being inside the white boxes");
+			JOptionPane.showMessageDialog(null, " You do however, get double points for being inside the orange boxes");
+		}
+	}
+void remove() {
 		for (int i = 0; i < lines.size(); i++) {
 			if(lines.get(i).x < -thin) {
 				lines.get(i).isactive=false;
@@ -132,23 +196,20 @@ public class Coolclass extends PApplet{
 			}
 		}
 	}
-
-	void outofbounds() {
+void outofbounds() {
 		if ((WIDTH / speed) <= lines.size()) {
 			lines.get(WIDTH / speed).isactive = false;
 		}
 	}
-
-	void drawlines() {
-		background(0, 0, 0);
+void drawlines() {
+		
 		for (int i = 0; i < lines.size(); i++) {
 			lines.get(i).draw();
 	
 		}
 		
 	}
-
-	void movelines() {
+void movelines() {
 	if(!ispaused) {
 		for (int i = 0; i < lines.size(); i++) {
 			lines.get(i).x -= speed;
@@ -156,8 +217,7 @@ public class Coolclass extends PApplet{
 	}
 
 	}
-
-	int getfinaly() {
+int getfinaly() {
 		Integer linesy = 5;
 		int linesfinaly = 0;
 		int lineslasty = 5;
@@ -339,15 +399,27 @@ void slow() {
 		
 	}
 	}
-void cursorcheck() {
-	for(int i=0;lines.size()>i;i++) {
-		if(mouseY > lines.get(i).finaly && mouseY<lines.get(i).finaly+tall) {
-			if(mouseX >lines.get(i).x && mouseY<lines.get(i).x+thin) {
+void mousecheck() {
+	insidelines=false;
+	for(int i=0;lines.size()-1>i;i++) {
+		if(mouseY > lines.get(i).finaly && mouseY<(lines.get(i).finaly)+tall) {
+			if(mouseX >lines.get(i).x && mouseX<(lines.get(i)).x+thin) {
 			insidelines=true;
+			juststarted=false;
+			cooldebugline=i;
 			}
 		}
+		
 		//outside of for loop
 	}
+	background(0, 0, 0);
+	if(insidelines) {
+		
+		background(50, 25, 10);
+		
+	}
+
+	
 }
 	void addlines() {
 if(leniency) {

@@ -26,9 +26,11 @@ public class Coolclass extends PApplet{
 	   
 	//makes it so if an up and down chain happenes, the lines overlap twice
 	Boolean leniency =false; 
+
+	//used to keep the background red
+	int scoretimer =0;
 //does what the name impies
 	boolean insidelines =false;
-	
 	int changedir = 0;
 	//used to help debug the point system
 	int cooldebugline;
@@ -48,6 +50,8 @@ public class Coolclass extends PApplet{
 	int chains = 3;
 	int chainb = 6;
 	int chainf;
+	//Toggles the overlap box
+	boolean overlap = true;
 	//stores the good, bad, and net points
 	int goodp;
 	int badp;
@@ -145,40 +149,99 @@ void juststarted() {
 		PFont f;
 		f = createFont("Arial",16,true);
 		textFont(f,36);
-		fill(255, 255, 255);
+		fill(235, 235, 255);
 		text("Press [space] to start", WIDTH/2-150, HEIGHT/2);
 		text("Press [shift + t] for tutorial", WIDTH/2-150, HEIGHT/2+100);
-		text("Press [shift + space] for hard mode (shift + f for details)", WIDTH/2-400, HEIGHT/2+150);
+		
 	}
 	}
 }
 	@Override
 	public void draw() {
+		editor();
 		mousecheck();
 		points();
-		juststarted();
+	
 		tutorial();
 		linesamount();
 		slow();
 		movelines();
 		drawlines();
 		addlines();
+		restart();
 		remove();
 		overlap();
-		
+			juststarted();
 	}
-	void tutorial() {
+void editor() {
+	//speed 4, thin 50, tall 100, chains/b 3/6, ranges/b 25/45, overlap t
+	
+	if(key==KeyEvent.VK_D) {
+		
+	
+String len =	JOptionPane.showInputDialog("1/9 \n Press enter if you don't want to edit the variable \n Leniency \n false \n Has it so when the lines go in an up down up down pattern, there isn't a gap betweem them \n type t/f");
+String spd =	JOptionPane.showInputDialog("2/9 \n speed \n 4 \n Changes how fast the lines should be, if it breaks something, try making it a multiple of 4");
+String thn =JOptionPane.showInputDialog("3/9 \n thin \n 50 \n The width of the lines ");
+String tal =	JOptionPane.showInputDialog("4/9 \n tall \n 100 \n The height of the lines");
+	String chnb =	JOptionPane.showInputDialog("5/9 \n  chains \n 3 \n the minimum amount of times the lines must chain together in one direction");
+	String chns =	JOptionPane.showInputDialog("6/9 \n chainb \n 6 \n The same as before but instead it's the maximum amount of times");
+	String rngs =	JOptionPane.showInputDialog("7/9 \n ranges \n 25 \n the minimum distance the lines can be from each other");
+	String rngb =	JOptionPane.showInputDialog("8/9 \n rangeb \n 45 \n the same as before but the max distance");
+	String ovp =	JOptionPane.showInputDialog("9/9 \n overlap \n true \n toggles the white squares \n type t/f");
+	
+	if(!spd.isEmpty()) { int dspd = Integer.parseInt(spd);speed=dspd;}
+	if(!thn.isEmpty()) {int dthn = Integer.parseInt(thn);thin=dthn;}
+	if(!tal.isEmpty()) {int dtal = Integer.parseInt(tal);tall=dtal;}
+	if(!chnb.isEmpty()) {int dchnb = Integer.parseInt(chnb);chainb=dchnb;}
+	if(!chns.isEmpty()) {int dchns = Integer.parseInt(chns);chains=dchns;}
+	if(!rngs.isEmpty()) {int drngs = Integer.parseInt(rngs);ranges=drngs;}
+	if(!rngb.isEmpty()) {int drngb = Integer.parseInt(rngb);rangeb=drngb;}
+	if(!len.isEmpty()) {
+		if(len .equals ("t") ) {
+			leniency=true;
+			}
+		
+	if(len.equals("f")) {
+			leniency=false;
+			}
+		}
+	
+	
+	
+	if(!ovp.isEmpty()) {
+		if(ovp .equals ("t") ) {
+			overlap=true;
+			}if(ovp.equals("f")){
+			 overlap=false;
+			}
+	}
+	}
+		}
+	
+	
+	
+			
+		
+
+
+void tutorial() {
+	if(key ==KeyEvent.VK_P) {
+		String consoleprintthing = JOptionPane.showInputDialog("I couldn't think of anything funny to put here");
+		System.out.println(consoleprintthing);
+	}
 		if (key == KeyEvent.VK_T) {
 			delay(500);
-			JOptionPane.showMessageDialog(null, "Keep your cursor inside the orange and white boxes");
-		JOptionPane.showMessageDialog(null, " The white boxes are were the lines overlap, \n  However they give less points");
-		JOptionPane.showMessageDialog(null, "Good stands for good points, you get those for being inside the lines \n Bad stands for bad points, you get those for being outside of the lines \n Net stands for net points, it's your good points with bad ones subtracted");
-		JOptionPane.showMessageDialog(null, "Press space to pause ");
-		JOptionPane.showMessageDialog(null, "Collect the tokens on the top and bottom of the screen to get rid of bad points \n Try to do it quickly though, since you still get bad points for being outside of the lines \n Hasn't been added yet though");
+			JOptionPane.showMessageDialog(null, "1/7 \n You can press enter to go through the tutorial without pressing ok \n Keep your cursor inside the orange and white boxes");
+		JOptionPane.showMessageDialog(null, "2/7 \n The white boxes are were the lines overlap, \n it's easier to think of it as going from white box to white box");
+		JOptionPane.showMessageDialog(null, "3/7 \n Good stands for good points, you get those for being inside the lines \n Bad stands for bad points, you get those for being outside of the lines \n Net stands for net points, it's your good points with bad ones subtracted");
+		JOptionPane.showMessageDialog(null, "4/7 \n Press space to pause and shift+r to restart quickly");
+		JOptionPane.showMessageDialog(null, "5/7 \n Collect the tokens on the top and bottom of the screen to get rid of bad points \n Try to do it quickly though, since you still get bad points for being outside of the lines \n Hasn't been added yet though");
+		JOptionPane.showMessageDialog(null, "6/7 \n Shift + r to restart");
+		JOptionPane.showMessageDialog(null, "7/7 \n Shift + d to change variables (exit out of this popup (enter or ok) before doing so)");
 		}
-		if(key ==KeyEvent.VK_F) {
-			JOptionPane.showMessageDialog(null, "Hard mode makes it so you don't get any points for being inside the white boxes");
-			JOptionPane.showMessageDialog(null, " You do however, get double points for being inside the orange boxes");
+		if(key ==KeyEvent.VK_M) {
+			delay(500);
+			
 		}
 	}
 void remove() {
@@ -328,6 +391,7 @@ int getfinaly() {
 		return linesfinaly;
 	}
 void overlap() {
+	if(overlap) {
 	for (int i = 1; i < lines.size(); i++) {
 		if(lines.get(i-1).finaly > lines.get(i).finaly) {
 			 y1 = lines.get(i-1).finaly;
@@ -346,7 +410,10 @@ void overlap() {
 			 
 			 x3=ax-w3;
 			// y3=ay;
-			 fill(255, 255, 255);
+			 fill(85, 55, 55);
+			 if(!ispaused) {
+				 fill(255, 255, 255);
+			 }
 			 rect(x3, y1, w3, h3);
 			 //x,y,w,h
 			 
@@ -368,10 +435,14 @@ void overlap() {
 			 h3=y1+tall-y2;
 			 
 			 
-			 fill (255, 255, 255);
+			 fill(85, 55, 55);
+			 if(!ispaused) {
+				 fill(255, 255, 255);
+			 }
 			 rect(x2, y2, w3, h3);
 				
 		}
+	}
 	}
 	
 }
@@ -400,6 +471,7 @@ void slow() {
 	}
 	}
 void mousecheck() {
+
 	insidelines=false;
 	for(int i=0;lines.size()-1>i;i++) {
 		if(mouseY > lines.get(i).finaly && mouseY<(lines.get(i).finaly)+tall) {
@@ -412,14 +484,41 @@ void mousecheck() {
 		
 		//outside of for loop
 	}
-	background(0, 0, 0);
+	background(50, 25, 10);
+	if(!insidelines) {
+	scoretimer=0;
+	}
 	if(insidelines) {
-		
-		background(50, 25, 10);
-		
+		scoretimer++;
+		if(scoretimer>25) {
+		background(10, 50, 25);
+		}
 	}
 
 	
+}
+void restart() {
+	if(key == KeyEvent.VK_M) {
+		//restar the whole game
+	}
+	if(key == KeyEvent.VK_R) {
+		//insta restart level
+		juststarted=true;
+		for(int i=0; i<lines.size()-1;i++) {
+			lines.get(i).isactive=false;
+		}
+		Iterator<Lines> it = lines.iterator();
+		while (it.hasNext()) {
+			Lines eachAlien = it.next();
+			if (!eachAlien.isactive) {
+				it.remove();
+
+			}
+		}
+		goodp=0;
+		badp=0;
+		netp=0;
+	}
 }
 	void addlines() {
 if(leniency) {

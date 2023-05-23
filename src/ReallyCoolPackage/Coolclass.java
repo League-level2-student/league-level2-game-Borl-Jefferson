@@ -26,7 +26,9 @@ public class Coolclass extends PApplet{
 	   
 	//makes it so if an up and down chain happenes, the lines overlap twice
 	Boolean leniency =false; 
-
+//used to keep track of different modes
+	boolean hardmode =false;
+	boolean zenmode = false;
 	//used to keep the background red
 	int scoretimer =0;
 //does what the name impies
@@ -37,14 +39,26 @@ public class Coolclass extends PApplet{
 	//this is what prevents you from getting points at the very begening 
 	boolean juststarted =true;
 	// speed of the lines, should be chosen by the user, or oculd be entered through
-	int speed = 4;
+	float speed = 4;
 	// size of the lines, same stuff after the comma as before
 	int thin = 50;
 	// The height
 	int tall = 100;
+	//the multiplier for points
+	float pm;
 		//Max and minumum height of lines
 	int maxheight = tall*2;
 	int minheight = HEIGHT-(tall*2);	
+	//used for tokens
+	int theight = 40;
+	int bottomspace=HEIGHT-tall/2;
+	int topspace =tall/2;
+	int twidth = 25;
+	int tvalue = 150;
+	int tx;
+	int tp; //lol
+	boolean tspwn=false;
+	boolean torb;
 // (should be a rage)how long things should be chained togegther before
 	// switching directicten (as in up and down), same stuff
 	int chains = 3;
@@ -53,15 +67,21 @@ public class Coolclass extends PApplet{
 	//Toggles the overlap box
 	boolean overlap = true;
 	//stores the good, bad, and net points
-	int goodp;
+	float goodp;
 	int badp;
-	int netp;
+	float netp=0;
+	//netp but a float
+	float netpbaf;
 	// finds the last line so it can find out when to add a new line
 	int large;
 	//used to store the speed when paused
 	int speedsave;
+	//net points divided by one thousand
+	float netpdot;
 	//used to have the pause stuff work
 	boolean ispaused = true;
+	//used to help with speed increase
+	float ss=speed;
 	// (should be a range)the max distance the lines can be apart
 	int ranges = 25;
 	int rangeb = 45;
@@ -125,14 +145,20 @@ void points() {
 	font = createFont("Arial",8,true);
 	textFont(font,36);
 	fill(255, 255, 255);
-	text("good " + goodp, 50, 50);
+	text("good " + round(goodp), 50, 50);
 	text("bad " + badp, 50, 100);
-	text("net " + netp, WIDTH-250, 50);
+	text("net " + round(netp), WIDTH-250, 50);
 	if(!ispaused) {
 	if(!juststarted) {
 		
 		if(insidelines) {
-			goodp++;
+			pm=((1.0f/WIDTH)*mouseX);
+			
+			System.out.println(pm);
+			
+			
+			goodp+=(1+(1*pm));
+		
 		}
 		if(!insidelines) {
 			badp++;
@@ -161,9 +187,10 @@ void juststarted() {
 		editor();
 		mousecheck();
 		points();
-	
+	modes();
 		tutorial();
 		linesamount();
+		tokens();
 		slow();
 		movelines();
 		drawlines();
@@ -217,8 +244,78 @@ String tal =	JOptionPane.showInputDialog("4/9 \n tall \n 100 \n The height of th
 	}
 	}
 		}
+void modes() {
+	if(!hardmode) {
+	if(netp>0) {
+		netpdot=netp/10000;
+		speed=ss+ss*netpdot;
+	}
+	}
+	if(hardmode) {
+		netpdot=100/(goodp/badp);
+		System.out.println(netpdot);
+		
+	}
 	
 	
+}
+void tokens() {
+	if(tp>500) {
+		tp=0;
+		if(!tspwn) {
+			tx=ccr.nextInt(WIDTH-(tall*4))+tall*2;
+				torb=ccr.nextBoolean();
+		}
+	tspwn=true;
+	}
+	if(tspwn) {	
+		
+		
+		if(torb) {
+			fill(200, 175, 30);
+			rect(tx, topspace, twidth, theight);
+			
+			if(mouseX>tx && mouseX<tx+twidth) {
+		if(mouseY<topspace+theight && mouseY>topspace) {
+			
+			juststarted=true;
+			
+			tspwn=false;
+			if(badp-tvalue>0) {
+			badp-=tvalue;
+			}
+			else {
+				badp=0;
+			}
+		}
+		
+	}
+		}
+		
+		
+		if(!torb) {
+			fill(200, 175, 30);
+			rect(tx, bottomspace, twidth, theight);
+			if(mouseX>tx && mouseX<tx+twidth) {
+				if(mouseY<bottomspace+theight && mouseY>bottomspace) {
+					
+					juststarted=true;
+					
+					tspwn=false;
+					if(badp-tvalue>0) {
+					badp-=tvalue;
+					}
+					else {
+						badp=0;
+					}
+				}
+				
+			}
+		}
+		
+	}
+	
+}
 	
 			
 		
@@ -231,18 +328,27 @@ void tutorial() {
 	}
 		if (key == KeyEvent.VK_T) {
 			delay(500);
-			JOptionPane.showMessageDialog(null, "1/7 \n You can press enter to go through the tutorial without pressing ok \n Keep your cursor inside the orange and white boxes");
-		JOptionPane.showMessageDialog(null, "2/7 \n The white boxes are were the lines overlap, \n it's easier to think of it as going from white box to white box");
-		JOptionPane.showMessageDialog(null, "3/7 \n Good stands for good points, you get those for being inside the lines \n Bad stands for bad points, you get those for being outside of the lines \n Net stands for net points, it's your good points with bad ones subtracted");
-		JOptionPane.showMessageDialog(null, "4/7 \n Press space to pause and shift+r to restart quickly");
-		JOptionPane.showMessageDialog(null, "5/7 \n Collect the tokens on the top and bottom of the screen to get rid of bad points \n Try to do it quickly though, since you still get bad points for being outside of the lines \n Hasn't been added yet though");
-		JOptionPane.showMessageDialog(null, "6/7 \n Shift + r to restart");
-		JOptionPane.showMessageDialog(null, "7/7 \n Shift + d to change variables (exit out of this popup (enter or ok) before doing so)");
+			JOptionPane.showMessageDialog(null, "1/9 \n You can press enter to go through the tutorial without pressing ok \n Keep your cursor inside the orange and white boxes");
+		JOptionPane.showMessageDialog(null, "2/9 \n The white boxes are were the lines overlap, \n it's easier to think of it as going from white box to white box");
+		JOptionPane.showMessageDialog(null, "3/9 \n Good stands for good points, you get those for being inside the lines \n Bad stands for bad points, you get those for being outside of the lines \n Net stands for net points, it's your good points with bad ones subtracted");
+		JOptionPane.showMessageDialog(null, "4/9 \n Press space to pause and shift+r to restart quickly");
+		JOptionPane.showMessageDialog(null, "5/9 \n Collect the tokens on the top and bottom of the screen to get rid of bad points \n Try to do it quickly though, since you still get bad points for being outside of the lines \n Hasn't been added yet though");
+		JOptionPane.showMessageDialog(null, "6/9 \n Shift + r to restart");
+		JOptionPane.showMessageDialog(null, "7/9 \n Shift + d to change variables (exit out of this popup (enter or ok) before doing so)");
+		JOptionPane.showMessageDialog(null, "8/9 \n Shift + h for hard mode \n Hard mode makes it so the white boxes don't give point");
+		JOptionPane.showMessageDialog(null, "9/9 \n Shift + z for slow mode \n slow mode makes it so the speed is constant and doesn't increase over time");
+		
+		
 		}
 		if(key ==KeyEvent.VK_M) {
 			delay(500);
 			
 		}
+		if(key==KeyEvent.VK_H) {
+			hardmode=true;
+			zenmode=false;
+		}
+		
 	}
 void remove() {
 		for (int i = 0; i < lines.size(); i++) {
@@ -478,7 +584,7 @@ void mousecheck() {
 			if(mouseX >lines.get(i).x && mouseX<(lines.get(i)).x+thin) {
 			insidelines=true;
 			juststarted=false;
-			cooldebugline=i;
+			
 			}
 		}
 		
@@ -490,6 +596,7 @@ void mousecheck() {
 	}
 	if(insidelines) {
 		scoretimer++;
+		tp++;
 		if(scoretimer>25) {
 		background(10, 50, 25);
 		}

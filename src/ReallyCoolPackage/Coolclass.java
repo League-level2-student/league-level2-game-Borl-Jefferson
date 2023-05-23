@@ -65,7 +65,7 @@ public class Coolclass extends PApplet{
 	int chainb = 6;
 	int chainf;
 	//Toggles the overlap box
-	boolean overlap = true;
+	boolean overlap = true; 
 	//stores the good, bad, and net points
 	float goodp;
 	int badp;
@@ -131,7 +131,7 @@ public class Coolclass extends PApplet{
 public void settings() {
 		// this is where things get set to stuff
 		size(WIDTH, HEIGHT);
-
+//idk why I made things plural 
 	}
 public int chaincheck() {
 
@@ -154,7 +154,7 @@ void points() {
 		if(insidelines) {
 			pm=((1.0f/WIDTH)*mouseX);
 			
-			System.out.println(pm);
+		
 			
 			
 			goodp+=(1+(1*pm));
@@ -186,8 +186,9 @@ void juststarted() {
 	public void draw() {
 		editor();
 		mousecheck();
+		modes();
 		points();
-	modes();
+	
 		tutorial();
 		linesamount();
 		tokens();
@@ -245,6 +246,11 @@ String tal =	JOptionPane.showInputDialog("4/9 \n tall \n 100 \n The height of th
 	}
 		}
 void modes() {
+	if(key==KeyEvent.VK_H) {
+		hardmode=!hardmode;
+		System.out.println("Hard mode enabled");
+		delay(500);
+	}
 	if(!hardmode) {
 	if(netp>0) {
 		netpdot=netp/10000;
@@ -252,8 +258,12 @@ void modes() {
 	}
 	}
 	if(hardmode) {
-		netpdot=100/(goodp/badp);
-		System.out.println(netpdot);
+		if(netp>100) {
+	//	speed=((100/goodp)*(goodp-badp))/10;
+			speed = goodp / (badp/4 + 4);
+
+System.out.println("speed " + speed);
+		}
 		
 	}
 	
@@ -333,21 +343,17 @@ void tutorial() {
 		JOptionPane.showMessageDialog(null, "3/9 \n Good stands for good points, you get those for being inside the lines \n Bad stands for bad points, you get those for being outside of the lines \n Net stands for net points, it's your good points with bad ones subtracted");
 		JOptionPane.showMessageDialog(null, "4/9 \n Press space to pause and shift+r to restart quickly");
 		JOptionPane.showMessageDialog(null, "5/9 \n Collect the tokens on the top and bottom of the screen to get rid of bad points \n Try to do it quickly though, since you still get bad points for being outside of the lines \n Hasn't been added yet though");
-		JOptionPane.showMessageDialog(null, "6/9 \n Shift + r to restart");
-		JOptionPane.showMessageDialog(null, "7/9 \n Shift + d to change variables (exit out of this popup (enter or ok) before doing so)");
-		JOptionPane.showMessageDialog(null, "8/9 \n Shift + h for hard mode \n Hard mode makes it so the white boxes don't give point");
-		JOptionPane.showMessageDialog(null, "9/9 \n Shift + z for slow mode \n slow mode makes it so the speed is constant and doesn't increase over time");
-		
+		JOptionPane.showMessageDialog(null, "6/9 \n The speed increases overtime");	
+		JOptionPane.showMessageDialog(null, "7/9 \n Shift + h for hard mode \n Hard mode makes it so the speed is effected by your ratio of good points to bad points");
+		JOptionPane.showMessageDialog(null, "8/9 \n Shift + z for slow mode \n slow mode makes it so the speed is constant and doesn't increase over time");
+		JOptionPane.showMessageDialog(null, "9/9 \n Shift + d to change variables (exit out of this popup (enter or ok) before doing so)");
 		
 		}
 		if(key ==KeyEvent.VK_M) {
 			delay(500);
 			
 		}
-		if(key==KeyEvent.VK_H) {
-			hardmode=true;
-			zenmode=false;
-		}
+	
 		
 	}
 void remove() {
@@ -554,7 +560,6 @@ void overlap() {
 }
 void slow() {
 	if(keyPressed) {
-		System.out.println("hello");
 		if (key == KeyEvent.VK_SPACE) {
 			delay(500);
 			if(!ispaused) {

@@ -23,7 +23,7 @@ public class Coolclass extends PApplet{
 
 	Random ccr = new Random();
    
-	   
+	 
 	//makes it so if an up and down chain happenes, the lines overlap twice
 	Boolean leniency =false; 
 //used to keep track of different modes
@@ -87,6 +87,8 @@ public class Coolclass extends PApplet{
 	int rangeb = 45;
 	//helps with not flooding console with lines amount
 	int linescounter=0;
+	//toggles the trail
+	boolean ctrail = true;
 //Checks to see if the lines should go to the middle or not
 	Boolean mid = false;
 	Boolean midt=false;
@@ -122,7 +124,8 @@ public class Coolclass extends PApplet{
 	int linesfinaly = 5;
 
 	ArrayList<Lines> lines = new ArrayList<Lines>();
-
+	ArrayList<Trail> trails = new ArrayList<Trail>();
+	
 	@Override
 	public void setup() {
 
@@ -148,6 +151,9 @@ void points() {
 	text("good " + round(goodp), 50, 50);
 	text("bad " + badp, 50, 100);
 	text("net " + round(netp), WIDTH-250, 50);
+	speed-=.5;
+	text("level " + round(speed), WIDTH-250, 100);
+	speed+=.5;
 	if(!ispaused) {
 	if(!juststarted) {
 		
@@ -167,8 +173,12 @@ void points() {
 	
 	}
 	}
+	if(hardmode) {
+		if(100-netp>0) {
+	text("Hardmode in " + round(100-netp), WIDTH/2, 75);	
+		}
+	}
 }
-// new Segment(hx, hy, this
 void juststarted() {
 	if(juststarted) {
 		if(ispaused) {
@@ -198,8 +208,11 @@ void juststarted() {
 		addlines();
 		restart();
 		remove();
+		removet();
 		overlap();
+		trail();
 			juststarted();
+			
 	}
 void editor() {
 	//speed 4, thin 50, tall 100, chains/b 3/6, ranges/b 25/45, overlap t
@@ -207,15 +220,16 @@ void editor() {
 	if(key==KeyEvent.VK_D) {
 		
 	
-String len =	JOptionPane.showInputDialog("1/9 \n Press enter if you don't want to edit the variable \n Leniency \n false \n Has it so when the lines go in an up down up down pattern, there isn't a gap betweem them \n type t/f");
-String spd =	JOptionPane.showInputDialog("2/9 \n speed \n 4 \n Changes how fast the lines should be, if it breaks something, try making it a multiple of 4");
-String thn =JOptionPane.showInputDialog("3/9 \n thin \n 50 \n The width of the lines ");
-String tal =	JOptionPane.showInputDialog("4/9 \n tall \n 100 \n The height of the lines");
-	String chnb =	JOptionPane.showInputDialog("5/9 \n  chains \n 3 \n the minimum amount of times the lines must chain together in one direction");
-	String chns =	JOptionPane.showInputDialog("6/9 \n chainb \n 6 \n The same as before but instead it's the maximum amount of times");
-	String rngs =	JOptionPane.showInputDialog("7/9 \n ranges \n 25 \n the minimum distance the lines can be from each other");
-	String rngb =	JOptionPane.showInputDialog("8/9 \n rangeb \n 45 \n the same as before but the max distance");
-	String ovp =	JOptionPane.showInputDialog("9/9 \n overlap \n true \n toggles the white squares \n type t/f");
+String len =	JOptionPane.showInputDialog("1/10 \n Press enter if you don't want to edit the variable \n Leniency \n false \n Has it so when the lines go in an up down up down pattern, there isn't a gap betweem them \n type t/f");
+String spd =	JOptionPane.showInputDialog("2/10 \n speed \n 4 \n Changes how fast the lines should be, if it breaks something, try making it a multiple of 4");
+String thn =JOptionPane.showInputDialog("3/10 \n thin \n 50 \n The width of the lines ");
+String tal =	JOptionPane.showInputDialog("4/10 \n tall \n 100 \n The height of the lines");
+	String chnb =	JOptionPane.showInputDialog("5/10 \n  chains \n 3 \n the minimum amount of times the lines must chain together in one direction");
+	String chns =	JOptionPane.showInputDialog("6/10 \n chainb \n 6 \n The same as before but instead it's the maximum amount of times");
+	String rngs =	JOptionPane.showInputDialog("7/10 \n ranges \n 25 \n the minimum distance the lines can be from each other");
+	String rngb =	JOptionPane.showInputDialog("8/10 \n rangeb \n 45 \n the same as before but the max distance");
+	String ovp =	JOptionPane.showInputDialog("9/10 \n overlap \n true \n toggles the white squares \n type t/f");
+	String trl =	JOptionPane.showInputDialog("10/10 \n trail \n true \n toggles the trails \n type t/f");
 	
 	if(!spd.isEmpty()) { int dspd = Integer.parseInt(spd);speed=dspd;}
 	if(!thn.isEmpty()) {int dthn = Integer.parseInt(thn);thin=dthn;}
@@ -243,8 +257,19 @@ String tal =	JOptionPane.showInputDialog("4/9 \n tall \n 100 \n The height of th
 			 overlap=false;
 			}
 	}
-	}
+	
+	if(trl .equals ("t") ) {
+		ctrail=true;
 		}
+	
+if(trl.equals("f")) {
+		ctrail=false;
+		}
+	}
+	
+	
+	
+	}
 void modes() {
 	if(key==KeyEvent.VK_H) {
 		hardmode=!hardmode;
@@ -253,14 +278,14 @@ void modes() {
 	}
 	if(!hardmode) {
 	if(netp>0) {
-		netpdot=netp/10000;
+		netpdot=netp/8000;
 		speed=ss+ss*netpdot;
 	}
 	}
 	if(hardmode) {
 		if(netp>100) {
 	//	speed=((100/goodp)*(goodp-badp))/10;
-			speed = goodp / (badp/4 + 4);
+			speed = goodp / (badp/4 + 10);
 
 System.out.println("speed " + speed);
 		}
@@ -273,7 +298,7 @@ void tokens() {
 	if(tp>500) {
 		tp=0;
 		if(!tspwn) {
-			tx=ccr.nextInt(WIDTH-(tall*4))+tall*2;
+			tx=ccr.nextInt(WIDTH-(280))+250;
 				torb=ccr.nextBoolean();
 		}
 	tspwn=true;
@@ -326,11 +351,6 @@ void tokens() {
 	}
 	
 }
-	
-			
-		
-
-
 void tutorial() {
 	if(key ==KeyEvent.VK_P) {
 		String consoleprintthing = JOptionPane.showInputDialog("I couldn't think of anything funny to put here");
@@ -338,15 +358,14 @@ void tutorial() {
 	}
 		if (key == KeyEvent.VK_T) {
 			delay(500);
-			JOptionPane.showMessageDialog(null, "1/9 \n You can press enter to go through the tutorial without pressing ok \n Keep your cursor inside the orange and white boxes");
-		JOptionPane.showMessageDialog(null, "2/9 \n The white boxes are were the lines overlap, \n it's easier to think of it as going from white box to white box");
-		JOptionPane.showMessageDialog(null, "3/9 \n Good stands for good points, you get those for being inside the lines \n Bad stands for bad points, you get those for being outside of the lines \n Net stands for net points, it's your good points with bad ones subtracted");
-		JOptionPane.showMessageDialog(null, "4/9 \n Press space to pause and shift+r to restart quickly");
-		JOptionPane.showMessageDialog(null, "5/9 \n Collect the tokens on the top and bottom of the screen to get rid of bad points \n Try to do it quickly though, since you still get bad points for being outside of the lines \n Hasn't been added yet though");
-		JOptionPane.showMessageDialog(null, "6/9 \n The speed increases overtime");	
-		JOptionPane.showMessageDialog(null, "7/9 \n Shift + h for hard mode \n Hard mode makes it so the speed is effected by your ratio of good points to bad points");
-		JOptionPane.showMessageDialog(null, "8/9 \n Shift + z for slow mode \n slow mode makes it so the speed is constant and doesn't increase over time");
-		JOptionPane.showMessageDialog(null, "9/9 \n Shift + d to change variables (exit out of this popup (enter or ok) before doing so)");
+			JOptionPane.showMessageDialog(null, "1/8 \n You can press enter to go through the tutorial without pressing ok \n Keep your cursor inside the orange and white boxes");
+		JOptionPane.showMessageDialog(null, "2/8 \n The white boxes are were the lines overlap, \n it's easier to think of it as going from white box to white box");
+		JOptionPane.showMessageDialog(null, "3/8 \n Good stands for good points, you get those for being inside the lines \n Bad stands for bad points, you get those for being outside of the lines \n Net stands for net points, it's your good points with bad ones subtracted");
+		JOptionPane.showMessageDialog(null, "4/8 \n Press space to pause and shift+r to restart quickly");
+		JOptionPane.showMessageDialog(null, "5/8 \n Collect the tokens on the top and bottom of the screen to get rid of bad points \n Try to do it quickly though, since you still get bad points for being outside of the lines");
+		JOptionPane.showMessageDialog(null, "6/8 \n The speed increases overtime");	
+		JOptionPane.showMessageDialog(null, "7/8 \n Shift + h for hard mode \n Hard mode makes it so the speed is effected by your ratio of good points to bad points");
+		JOptionPane.showMessageDialog(null, "8/8 \n Shift + d to change variables, or toggle things \n exit out of this popup (enter or ok) before doing so");
 		
 		}
 		if(key ==KeyEvent.VK_M) {
@@ -371,6 +390,22 @@ void remove() {
 			}
 		}
 	}
+void removet() {
+	for (int i = 0; i < trails.size(); i++) {
+		if(trails.get(i).x < thin) {
+			trails.get(i).isactive=false;
+		}
+	}
+	Iterator<Trail> it = trails.iterator();
+	while (it.hasNext()) {
+		Trail eachAlien = it.next();
+		if (!eachAlien.isactive) {
+			it.remove();
+
+		}
+	}
+	
+}
 void outofbounds() {
 		if ((WIDTH / speed) <= lines.size()) {
 			lines.get(WIDTH / speed).isactive = false;
@@ -581,6 +616,15 @@ void slow() {
 		
 	}
 	}
+void trail() {
+	if(ctrail) {
+		trails.add(new Trail(this));
+		for (int i = 0; i < trails.size(); i++) {
+			trails.get(i).draw();
+	
+		}
+	}
+}
 void mousecheck() {
 
 	insidelines=false;
@@ -602,7 +646,7 @@ void mousecheck() {
 	if(insidelines) {
 		scoretimer++;
 		tp++;
-		if(scoretimer>25) {
+		if(scoretimer>15) {
 		background(10, 50, 25);
 		}
 	}
@@ -648,6 +692,7 @@ if(leniency) {
 void linesamount(){
 	if(linescounter==100) {
 		System.out.println("Amount of lines " + lines.size());	
+		System.out.println("Amount of trails " + trails.size());
 		linescounter=0;
 	}
 	linescounter++;
@@ -660,14 +705,4 @@ void linesamount(){
 
 
 	}
-
-	
-	
-
-	
-	
-	
-
-	
-	
 }

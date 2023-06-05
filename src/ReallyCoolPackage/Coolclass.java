@@ -2,6 +2,7 @@ package ReallyCoolPackage;
 
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -18,8 +19,10 @@ import processing.core.PFont;
 public class Coolclass extends PApplet{
 
 
-	static final int WIDTH = 1250;
-	static final int HEIGHT = 750;
+	static  int WIDTH = 1250;
+	static int HEIGHT = 750;
+	//  int WIDTH=Toolkit.getDefaultToolkit().getScreenSize().width;
+	 // int HEIGHT=Toolkit.getDefaultToolkit().getScreenSize().height;
 
 	Random ccr = new Random();
    
@@ -89,6 +92,10 @@ public class Coolclass extends PApplet{
 	int linescounter=0;
 	//toggles the trail
 	boolean ctrail = true;
+	//toggles the cursor
+	boolean crsrtgl = false;
+	//what do you think?
+	boolean fullscreen = false;
 //Checks to see if the lines should go to the middle or not
 	Boolean mid = false;
 	Boolean midt=false;
@@ -125,7 +132,27 @@ public class Coolclass extends PApplet{
 
 	ArrayList<Lines> lines = new ArrayList<Lines>();
 	ArrayList<Trail> trails = new ArrayList<Trail>();
-	
+		@Override
+	public void draw() {
+		editor();
+		mousecheck();
+		modes();
+		points();
+		tutorial();
+		linesamount();
+		tokens();
+		slow();
+		movelines();
+		drawlines();
+		addlines();
+		restart();
+		remove();
+		removet();
+		overlap();
+		trail();
+			juststarted();
+			cursorremove();
+	}
 	@Override
 	public void setup() {
 
@@ -192,44 +219,24 @@ void juststarted() {
 	}
 	}
 }
-	@Override
-	public void draw() {
-		editor();
-		mousecheck();
-		modes();
-		points();
-	
-		tutorial();
-		linesamount();
-		tokens();
-		slow();
-		movelines();
-		drawlines();
-		addlines();
-		restart();
-		remove();
-		removet();
-		overlap();
-		trail();
-			juststarted();
-			
-	}
 void editor() {
 	//speed 4, thin 50, tall 100, chains/b 3/6, ranges/b 25/45, overlap t
 	
 	if(key==KeyEvent.VK_D) {
 		
-	
-String len =	JOptionPane.showInputDialog("1/10 \n Press enter if you don't want to edit the variable \n Leniency \n false \n Has it so when the lines go in an up down up down pattern, there isn't a gap betweem them \n type t/f");
-String spd =	JOptionPane.showInputDialog("2/10 \n speed \n 4 \n Changes how fast the lines should be, if it breaks something, try making it a multiple of 4");
-String thn =JOptionPane.showInputDialog("3/10 \n thin \n 50 \n The width of the lines ");
-String tal =	JOptionPane.showInputDialog("4/10 \n tall \n 100 \n The height of the lines");
-	String chnb =	JOptionPane.showInputDialog("5/10 \n  chains \n 3 \n the minimum amount of times the lines must chain together in one direction");
-	String chns =	JOptionPane.showInputDialog("6/10 \n chainb \n 6 \n The same as before but instead it's the maximum amount of times");
-	String rngs =	JOptionPane.showInputDialog("7/10 \n ranges \n 25 \n the minimum distance the lines can be from each other");
-	String rngb =	JOptionPane.showInputDialog("8/10 \n rangeb \n 45 \n the same as before but the max distance");
-	String ovp =	JOptionPane.showInputDialog("9/10 \n overlap \n true \n toggles the white squares \n type t/f");
-	String trl =	JOptionPane.showInputDialog("10/10 \n trail \n true \n toggles the trails \n type t/f");
+	String fls =	JOptionPane.showInputDialog("1/12 \n Press enter if you don't want to edit the variable \n Full screen toggle \n false \n toggles fullscreen \n type t/f");
+String spd =	JOptionPane.showInputDialog("2/12 \n speed \n 4 \n Changes how fast the lines should be, if it breaks something, try making it a multiple of 4");
+String thn =JOptionPane.showInputDialog("3/12 \n thin \n 50 \n The width of the lines ");
+String tal =	JOptionPane.showInputDialog("4/12 \n tall \n 100 \n The height of the lines");
+	String chnb =	JOptionPane.showInputDialog("5/12 \n  chains \n 3 \n the minimum amount of times the lines must chain together in one direction");
+	String chns =	JOptionPane.showInputDialog("6/12 \n chainb \n 6 \n The same as before but instead it's the maximum amount of times");
+	String rngs =	JOptionPane.showInputDialog("7/12 \n ranges \n 25 \n the minimum distance the lines can be from each other");
+	String rngb =	JOptionPane.showInputDialog("8/12 \n rangeb \n 45 \n the same as before but the max distance");
+	String ovp =	JOptionPane.showInputDialog("9/12 \n overlap \n true \n toggles the white squares \n type t/f");
+	String trl =	JOptionPane.showInputDialog("10/12 \n trail \n true \n toggles the trails \n type t/f");
+	String ctg =	JOptionPane.showInputDialog("11/12 \n cursor toggle \n false \n toggles the cursor \n type t/f");
+	String len =	JOptionPane.showInputDialog("12/12 \n Press enter if you don't want to edit the variable \n Leniency \n false \n Has it so when the lines go in an up down up down pattern, there isn't a gap betweem them \n type t/f");
+
 	
 	if(!spd.isEmpty()) { int dspd = Integer.parseInt(spd);speed=dspd;}
 	if(!thn.isEmpty()) {int dthn = Integer.parseInt(thn);thin=dthn;}
@@ -239,7 +246,7 @@ String tal =	JOptionPane.showInputDialog("4/10 \n tall \n 100 \n The height of t
 	if(!rngs.isEmpty()) {int drngs = Integer.parseInt(rngs);ranges=drngs;}
 	if(!rngb.isEmpty()) {int drngb = Integer.parseInt(rngb);rangeb=drngb;}
 	if(!len.isEmpty()) {
-		if(len .equals ("t") ) {
+	if(len .equals ("t") ) {
 			leniency=true;
 			}
 		
@@ -248,6 +255,25 @@ String tal =	JOptionPane.showInputDialog("4/10 \n tall \n 100 \n The height of t
 			}
 		}
 	
+		
+	
+
+	
+
+	if(!fls.isEmpty()) {
+		if(fls .equals ("t") ) {
+			fullscreen=true;
+			WIDTH  =Toolkit.getDefaultToolkit().getScreenSize().width;
+			HEIGHT =Toolkit.getDefaultToolkit().getScreenSize().width;
+			}
+		
+	if(fls.equals("f")) {
+			fullscreen=false;
+			WIDTH = 1250;
+			 HEIGHT= 750;
+			}
+
+	}	
 	
 	
 	if(!ovp.isEmpty()) {
@@ -257,7 +283,7 @@ String tal =	JOptionPane.showInputDialog("4/10 \n tall \n 100 \n The height of t
 			 overlap=false;
 			}
 	}
-	
+	if(!trl.isEmpty()) {
 	if(trl .equals ("t") ) {
 		ctrail=true;
 		}
@@ -267,9 +293,18 @@ if(trl.equals("f")) {
 		}
 	}
 	
-	
-	
+	if(!ctg.isEmpty()) {
+if(ctg .equals ("t") ) {
+	crsrtgl=true;
 	}
+
+if(ctg.equals("f")) {
+	crsrtgl=false;
+	}
+}
+
+}	
+}
 void modes() {
 	if(key==KeyEvent.VK_H) {
 		hardmode=!hardmode;
@@ -278,7 +313,7 @@ void modes() {
 	}
 	if(!hardmode) {
 	if(netp>0) {
-		netpdot=netp/8000;
+		netpdot=netp/4000;
 		speed=ss+ss*netpdot;
 	}
 	}
@@ -289,16 +324,14 @@ void modes() {
 
 System.out.println("speed " + speed);
 		}
+	}
 		
 	}
-	
-	
-}
 void tokens() {
 	if(tp>500) {
 		tp=0;
 		if(!tspwn) {
-			tx=ccr.nextInt(WIDTH-(280))+250;
+			tx=ccr.nextInt(WIDTH-250-twidth)+250;
 				torb=ccr.nextBoolean();
 		}
 	tspwn=true;
@@ -646,7 +679,7 @@ void mousecheck() {
 	if(insidelines) {
 		scoretimer++;
 		tp++;
-		if(scoretimer>15) {
+		if(scoretimer>5) {
 		background(10, 50, 25);
 		}
 	}
@@ -676,7 +709,15 @@ void restart() {
 		netp=0;
 	}
 }
-	void addlines() {
+void cursorremove() {
+		if(!crsrtgl) {
+			noCursor();
+		}
+		if(crsrtgl) {
+			cursor(ARROW);
+		}
+}
+void addlines() {
 if(leniency) {
 		if (lines.get(lines.size() - 1).x < (WIDTH) - ((thin/10)*9)) {
 			lines.add(new Lines(this, getfinaly()));
@@ -689,6 +730,7 @@ if(leniency) {
 	}
 		
 	}
+
 void linesamount(){
 	if(linescounter==100) {
 		System.out.println("Amount of lines " + lines.size());	

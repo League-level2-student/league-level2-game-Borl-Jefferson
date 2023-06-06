@@ -18,11 +18,15 @@ import processing.core.PFont;
 //as levels get harder, have the color change
 public class Coolclass extends PApplet{
 
-
-	static  int WIDTH = 1250;
-	static int HEIGHT = 750;
-	//  int WIDTH=Toolkit.getDefaultToolkit().getScreenSize().width;
+	//what do you think?
+	boolean fullscreen = false;
+	
+	  //int WIDTH=Toolkit.getDefaultToolkit().getScreenSize().width;
 	 // int HEIGHT=Toolkit.getDefaultToolkit().getScreenSize().height;
+	
+	  int WIDTH = 1250;
+	 int HEIGHT = 750;
+
 
 	Random ccr = new Random();
    
@@ -69,6 +73,8 @@ public class Coolclass extends PApplet{
 	int chainf;
 	//Toggles the overlap box
 	boolean overlap = true; 
+	//used as a time for removing the cursor
+	int cursortimer=0;
 	//stores the good, bad, and net points
 	float goodp;
 	int badp;
@@ -94,8 +100,7 @@ public class Coolclass extends PApplet{
 	boolean ctrail = true;
 	//toggles the cursor
 	boolean crsrtgl = false;
-	//what do you think?
-	boolean fullscreen = false;
+
 //Checks to see if the lines should go to the middle or not
 	Boolean mid = false;
 	Boolean midt=false;
@@ -152,11 +157,13 @@ public class Coolclass extends PApplet{
 		trail();
 			juststarted();
 			cursorremove();
+			
 	}
 	@Override
 	public void setup() {
 
 		lines.add(new Lines(this, getfinaly()));
+		surface.setResizable(true);
 	}
 public void settings() {
 		// this is where things get set to stuff
@@ -224,18 +231,18 @@ void editor() {
 	
 	if(key==KeyEvent.VK_D) {
 		
-	String fls =	JOptionPane.showInputDialog("1/12 \n Press enter if you don't want to edit the variable \n Full screen toggle \n false \n toggles fullscreen \n type t/f");
-String spd =	JOptionPane.showInputDialog("2/12 \n speed \n 4 \n Changes how fast the lines should be, if it breaks something, try making it a multiple of 4");
-String thn =JOptionPane.showInputDialog("3/12 \n thin \n 50 \n The width of the lines ");
-String tal =	JOptionPane.showInputDialog("4/12 \n tall \n 100 \n The height of the lines");
-	String chnb =	JOptionPane.showInputDialog("5/12 \n  chains \n 3 \n the minimum amount of times the lines must chain together in one direction");
-	String chns =	JOptionPane.showInputDialog("6/12 \n chainb \n 6 \n The same as before but instead it's the maximum amount of times");
-	String rngs =	JOptionPane.showInputDialog("7/12 \n ranges \n 25 \n the minimum distance the lines can be from each other");
-	String rngb =	JOptionPane.showInputDialog("8/12 \n rangeb \n 45 \n the same as before but the max distance");
-	String ovp =	JOptionPane.showInputDialog("9/12 \n overlap \n true \n toggles the white squares \n type t/f");
-	String trl =	JOptionPane.showInputDialog("10/12 \n trail \n true \n toggles the trails \n type t/f");
-	String ctg =	JOptionPane.showInputDialog("11/12 \n cursor toggle \n false \n toggles the cursor \n type t/f");
-	String len =	JOptionPane.showInputDialog("12/12 \n Press enter if you don't want to edit the variable \n Leniency \n false \n Has it so when the lines go in an up down up down pattern, there isn't a gap betweem them \n type t/f");
+	//String fls =	JOptionPane.showInputDialog("0/11 \n Press enter if you don't want to edit the variable \n Full screen toggle \n false \n toggles fullscreen \n type t/f");
+String spd =	JOptionPane.showInputDialog("1/11 \n speed \n 4 \n Changes how fast the lines should be, if it breaks something, try making it a multiple of 4");
+String thn =JOptionPane.showInputDialog("2/11 \n thin \n 50 \n The width of the lines ");
+String tal =	JOptionPane.showInputDialog("3/11 \n tall \n 100 \n The height of the lines");
+	String chnb =	JOptionPane.showInputDialog("4/11 \n  chains \n 3 \n the minimum amount of times the lines must chain together in one direction");
+	String chns =	JOptionPane.showInputDialog("5/11 \n chainb \n 6 \n The same as before but instead it's the maximum amount of times");
+	String rngs =	JOptionPane.showInputDialog("6/11 \n ranges \n 25 \n the minimum distance the lines can be from each other");
+	String rngb =	JOptionPane.showInputDialog("7/11 \n rangeb \n 45 \n the same as before but the max distance");
+	String ovp =	JOptionPane.showInputDialog("8/11 \n overlap \n true \n toggles the white squares \n type t/f");
+	String trl =	JOptionPane.showInputDialog("19/11 \n trail \n true \n toggles the trails \n type t/f");
+	String ctg =	JOptionPane.showInputDialog("10/11 \n cursor toggle \n false \n toggles the cursor \n type t/f");
+	String len =	JOptionPane.showInputDialog("11/11 \n Press enter if you don't want to edit the variable \n Leniency \n false \n Has it so when the lines go in an up down up down pattern, there isn't a gap betweem them \n type t/f");
 
 	
 	if(!spd.isEmpty()) { int dspd = Integer.parseInt(spd);speed=dspd;}
@@ -260,20 +267,21 @@ String tal =	JOptionPane.showInputDialog("4/12 \n tall \n 100 \n The height of t
 
 	
 
-	if(!fls.isEmpty()) {
+	/*if(!fls.isEmpty()) {
 		if(fls .equals ("t") ) {
-			fullscreen=true;
+			
 			WIDTH  =Toolkit.getDefaultToolkit().getScreenSize().width;
 			HEIGHT =Toolkit.getDefaultToolkit().getScreenSize().width;
+			
 			}
 		
 	if(fls.equals("f")) {
-			fullscreen=false;
+			
 			WIDTH = 1250;
 			 HEIGHT= 750;
 			}
 
-	}	
+	}	*/
 	
 	
 	if(!ovp.isEmpty()) {
@@ -711,7 +719,10 @@ void restart() {
 }
 void cursorremove() {
 		if(!crsrtgl) {
+			if(!juststarted) {
 			noCursor();
+			
+			}
 		}
 		if(crsrtgl) {
 			cursor(ARROW);
@@ -730,7 +741,9 @@ if(leniency) {
 	}
 		
 	}
-
+//void fullscreen() {
+//fullScreen();
+//}
 void linesamount(){
 	if(linescounter==100) {
 		System.out.println("Amount of lines " + lines.size());	
